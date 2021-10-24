@@ -271,7 +271,12 @@ export interface ApiEndpointQuery<
   Definition extends QueryDefinition<any, any, any, any, any>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Definitions extends EndpointDefinitions
-> {}
+> {
+  /**
+   * All of these are `undefined` at runtime, purely to be used in TypeScript declarations!
+   */
+  Types: NonNullable<Definition['Types']>
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ApiEndpointMutation<
@@ -279,7 +284,12 @@ export interface ApiEndpointMutation<
   Definition extends MutationDefinition<any, any, any, any, any>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Definitions extends EndpointDefinitions
-> {}
+> {
+  /**
+   * All of these are `undefined` at runtime, purely to be used in TypeScript declarations!
+   */
+  Types: NonNullable<Definition['Types']>
+}
 
 export type ListenerActions = {
   /**

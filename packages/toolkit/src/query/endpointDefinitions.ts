@@ -118,6 +118,16 @@ interface EndpointDefinitionWithQueryFn<
   transformResponse?: never
 }
 
+export interface BaseEndpointTypes<
+  QueryArg,
+  BaseQuery extends BaseQueryFn,
+  ResultType
+> {
+  QueryArg: QueryArg
+  BaseQuery: BaseQuery
+  ResultType: ResultType
+}
+
 export type BaseEndpointDefinition<
   QueryArg,
   BaseQuery extends BaseQueryFn,
@@ -182,6 +192,31 @@ export interface QueryApi<ReducerPath extends string, Context extends {}> {
   context: Context
 }
 
+export interface QueryTypes<
+  QueryArg,
+  BaseQuery extends BaseQueryFn,
+  TagTypes extends string,
+  ResultType,
+  ReducerPath extends string = string
+> extends BaseEndpointTypes<QueryArg, BaseQuery, ResultType> {
+  /**
+   * The endpoint definition type. To be used with some internal generic types.
+   * @example
+   * ```ts
+   * const useMyWrappedHook: UseQuery<typeof api.endpoints.query.Types.QueryDefinition> = ...
+   * ```
+   */
+  QueryDefinition: QueryDefinition<
+    QueryArg,
+    BaseQuery,
+    TagTypes,
+    ResultType,
+    ReducerPath
+  >
+  TagTypes: TagTypes
+  ReducerPath: ReducerPath
+}
+
 export interface QueryExtraOptions<
   TagTypes extends string,
   ResultType,
@@ -242,6 +277,11 @@ export interface QueryExtraOptions<
    * Not to be used. A query should not invalidate tags in the cache.
    */
   invalidatesTags?: never
+
+  /**
+   * All of these are `undefined` at runtime, purely to be used in TypeScript declarations!
+   */
+  Types?: QueryTypes<QueryArg, BaseQuery, TagTypes, ResultType, ReducerPath>
 }
 
 export type QueryDefinition<
@@ -252,6 +292,31 @@ export type QueryDefinition<
   ReducerPath extends string = string
 > = BaseEndpointDefinition<QueryArg, BaseQuery, ResultType> &
   QueryExtraOptions<TagTypes, ResultType, QueryArg, BaseQuery, ReducerPath>
+
+export interface MutationTypes<
+  QueryArg,
+  BaseQuery extends BaseQueryFn,
+  TagTypes extends string,
+  ResultType,
+  ReducerPath extends string = string
+> extends BaseEndpointTypes<QueryArg, BaseQuery, ResultType> {
+  /**
+   * The endpoint definition type. To be used with some internal generic types.
+   * @example
+   * ```ts
+   * const useMyWrappedHook: UseMutation<typeof api.endpoints.query.Types.MutationDefinition> = ...
+   * ```
+   */
+  MutationDefinition: MutationDefinition<
+    QueryArg,
+    BaseQuery,
+    TagTypes,
+    ResultType,
+    ReducerPath
+  >
+  TagTypes: TagTypes
+  ReducerPath: ReducerPath
+}
 
 export interface MutationExtraOptions<
   TagTypes extends string,
@@ -316,6 +381,11 @@ export interface MutationExtraOptions<
    * Not to be used. A mutation should not provide tags to the cache.
    */
   providesTags?: never
+
+  /**
+   * All of these are `undefined` at runtime, purely to be used in TypeScript declarations!
+   */
+  Types?: MutationTypes<QueryArg, BaseQuery, TagTypes, ResultType, ReducerPath>
 }
 
 export type MutationDefinition<
