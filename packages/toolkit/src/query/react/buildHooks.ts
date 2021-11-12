@@ -55,8 +55,8 @@ import { useShallowStableValue } from './useShallowStableValue'
 // Copy-pasted from React-Redux
 export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' &&
-  typeof window.document !== 'undefined' &&
-  typeof window.document.createElement !== 'undefined'
+  window.document &&
+  window.document.createElement
     ? useLayoutEffect
     : useEffect
 

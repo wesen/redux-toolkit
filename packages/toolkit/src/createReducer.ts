@@ -249,7 +249,7 @@ export function createReducer<S extends NotFunction<any>>(
           const draft = previousState as Draft<S> // We can assume this is already a draft
           const result = caseReducer(draft, action)
 
-          if (typeof result === 'undefined') {
+          if (result === undefined) {
             return previousState
           }
 
@@ -259,7 +259,7 @@ export function createReducer<S extends NotFunction<any>>(
           // return the caseReducer func and not wrap it with produce.
           const result = caseReducer(previousState as any, action)
 
-          if (typeof result === 'undefined') {
+          if (result === undefined) {
             if (previousState === null) {
               return previousState
             }
