@@ -420,7 +420,7 @@ export type Pet = {
   tags?: Tag[];
   status?: 'available' | 'pending' | 'sold';
 };
-export const { useAddPetMutation, useGetPetByIdQuery } = injectedRtkApi;
+export const { useAddPetMutation, useGetPetByIdQuery, useLazyGetPetByIdQuery } = injectedRtkApi;
 
 `;
 
@@ -702,20 +702,28 @@ export const {
   useUpdatePetMutation,
   useAddPetMutation,
   useFindPetsByStatusQuery,
+  useLazyFindPetsByStatusQuery,
   useFindPetsByTagsQuery,
+  useLazyFindPetsByTagsQuery,
   useGetPetByIdQuery,
+  useLazyGetPetByIdQuery,
   useUpdatePetWithFormMutation,
   useDeletePetMutation,
   useUploadFileMutation,
   useGetInventoryQuery,
+  useLazyGetInventoryQuery,
   usePlaceOrderMutation,
   useGetOrderByIdQuery,
+  useLazyGetOrderByIdQuery,
   useDeleteOrderMutation,
   useCreateUserMutation,
   useCreateUsersWithListInputMutation,
   useLoginUserQuery,
+  useLazyLoginUserQuery,
   useLogoutUserQuery,
+  useLazyLogoutUserQuery,
   useGetUserByNameQuery,
+  useLazyGetUserByNameQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
 } = injectedRtkApi;
@@ -764,7 +772,7 @@ export type GetStructureDefinitionApiArg = {
   /** Some description */
   naming_conflict?: any;
 };
-export const { useGetStructureDefinitionQuery } = injectedRtkApi;
+export const { useGetStructureDefinitionQuery, useLazyGetStructureDefinitionQuery } = injectedRtkApi;
 
 `;
 
@@ -1025,20 +1033,28 @@ export const {
   useUpdatePetMutation,
   useAddPetMutation,
   useFindPetsByStatusQuery,
+  useLazyFindPetsByStatusQuery,
   useFindPetsByTagsQuery,
+  useLazyFindPetsByTagsQuery,
   useGetPetByIdQuery,
+  useLazyGetPetByIdQuery,
   useUpdatePetWithFormMutation,
   useDeletePetMutation,
   useUploadFileMutation,
   useGetInventoryQuery,
+  useLazyGetInventoryQuery,
   usePlaceOrderMutation,
   useGetOrderByIdQuery,
+  useLazyGetOrderByIdQuery,
   useDeleteOrderMutation,
   useCreateUserMutation,
   useCreateUsersWithListInputMutation,
   useLoginUserQuery,
+  useLazyLoginUserQuery,
   useLogoutUserQuery,
+  useLazyLogoutUserQuery,
   useGetUserByNameQuery,
+  useLazyGetUserByNameQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
 } = injectedRtkApi;
