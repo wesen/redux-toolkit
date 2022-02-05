@@ -5564,7 +5564,7 @@ __metadata:
     husky: ^4.3.6
     jest: ^26.6.3
     msw: ^0.25.0
-    oazapfts: ^3.5.0
+    oazapfts: "git+https://github.com/msutkowski/oazapfts#b3ef644c88e92825f22cc8d947ca8c19c9569837"
     openapi-types: ^9.1.0
     prettier: ^2.2.1
     pretty-quick: ^3.1.0
@@ -18643,9 +18643,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"oazapfts@npm:^3.5.0":
+"oazapfts@git+https://github.com/msutkowski/oazapfts#b3ef644c88e92825f22cc8d947ca8c19c9569837":
   version: 3.5.0
-  resolution: "oazapfts@npm:3.5.0"
+  resolution: "oazapfts@https://github.com/msutkowski/oazapfts.git#commit=b3ef644c88e92825f22cc8d947ca8c19c9569837"
   dependencies:
     "@apidevtools/swagger-parser": ^10.0.1
     lodash: ^4.17.20
@@ -18654,7 +18654,7 @@ fsevents@^1.2.7:
     typescript: ^4.1.2
   bin:
     oazapfts: lib/codegen/cli.js
-  checksum: 5ffc99c88afc300313c77c683953c8da56a5d190fe01c3d5128c6c1df4dd14eb27852344b880a4d91de811911826a31c58f9ac8dc060bef8fe05277a066035b5
+  checksum: c956ccd8bb9d438947eac32d9446fb94b62dcd9a04ef1f534caed0d0e2e1cb86430b0a1e5b7243b6d026c46d5f8a0116a90d55fe81aae47ddb531773db7fed93
   languageName: node
   linkType: hard
 
