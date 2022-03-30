@@ -115,6 +115,11 @@ export function buildSlice({
         draft,
         { payload: { queryCacheKey } }: PayloadAction<QuerySubstateIdentifier>
       ) {
+        console.log(
+          'remove query result',
+          queryCacheKey,
+          draft[queryCacheKey]?.requestId
+        )
         delete draft[queryCacheKey]
       },
       queryResultPatched(
@@ -149,6 +154,12 @@ export function buildSlice({
             }
             substate.startedTimeStamp = meta.startedTimeStamp
           })
+
+          console.log(
+            'addCase pending',
+            arg.queryCacheKey,
+            draft[arg.queryCacheKey]?.requestId
+          )
         })
         .addCase(queryThunk.fulfilled, (draft, { meta, payload }) => {
           updateQuerySubstateIfExists(
@@ -164,6 +175,11 @@ export function buildSlice({
               delete substate.error
               substate.fulfilledTimeStamp = meta.fulfilledTimeStamp
             }
+          )
+          console.log(
+            'addCase fulfilled',
+            meta.arg.queryCacheKey,
+            draft[meta.arg.queryCacheKey]?.requestId
           )
         })
         .addCase(
@@ -183,6 +199,11 @@ export function buildSlice({
                 }
               }
             )
+            console.log(
+              'addCase deleted',
+              arg.queryCacheKey,
+              draft[arg.queryCacheKey]?.requestId
+            )
           }
         )
         .addMatcher(hasRehydrationInfo, (draft, action) => {
@@ -194,6 +215,7 @@ export function buildSlice({
               entry?.status === QueryStatus.rejected
             ) {
               draft[key] = entry
+              console.log('rehydrate', key, draft[key]?.requestId)
             }
           }
         })

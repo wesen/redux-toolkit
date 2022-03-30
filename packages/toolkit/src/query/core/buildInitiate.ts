@@ -279,11 +279,35 @@ Features like automatic cache collection, automatic refetching etc. will not be 
 
         const { requestId, abort } = thunkResult
 
+        const prevThunk = runningQueries[queryCacheKey]
+        const allIds = [thunkResult.requestId, prevThunk?.requestId]
+
+        console.log(
+          'thunkResult',
+          thunkResult.requestId,
+          'prevThunk',
+          prevThunk?.requestId,
+          'prevStatus',
+          prevThunk
+        )
+
+        thunkResult.then((x) => {
+          console.log(
+            'thunkResult finished',
+            thunkResult.requestId,
+            'resolved',
+            x
+          )
+        })
+
         const statePromise: QueryActionCreatorResult<any> = Object.assign(
-          Promise.all([runningQueries[queryCacheKey], thunkResult]).then(() =>
-            (api.endpoints[endpointName] as ApiEndpointQuery<any, any>).select(
-              arg
-            )(getState())
+          Promise.all([runningQueries[queryCacheKey], thunkResult]).then(
+            (x) => {
+              console.log('finished promises', allIds, x)
+              return (
+                api.endpoints[endpointName] as ApiEndpointQuery<any, any>
+              ).select(arg)(getState())
+            }
           ),
           {
             arg,

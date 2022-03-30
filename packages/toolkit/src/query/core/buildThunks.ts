@@ -398,6 +398,17 @@ In the case of an unhandled error, no tags will be "provided" or "invalidated".`
       const requestState = state[reducerPath]?.queries?.[arg.queryCacheKey]
       const fulfilledVal = requestState?.fulfilledTimeStamp
 
+      if (requestState) {
+        console.log(
+          'existing query',
+          requestState?.requestId,
+          'status',
+          requestState?.status,
+          'fulfilledVal',
+          requestState?.fulfilledTimeStamp
+        )
+      }
+
       // Don't retry a request that's currently in-flight
       if (requestState?.status === 'pending') return false
 

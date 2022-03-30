@@ -580,6 +580,7 @@ If you want to use the AbortController to react to \`abort\` events, please cons
       const promise = (async function () {
         let finalAction: ReturnType<typeof fulfilled | typeof rejected>
         try {
+          console.log('check condition for', requestId)
           let conditionResult = options?.condition?.(arg, { getState, extra })
           if (isThenable(conditionResult)) {
             conditionResult = await conditionResult
