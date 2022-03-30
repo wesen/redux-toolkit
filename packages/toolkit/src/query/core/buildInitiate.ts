@@ -191,10 +191,12 @@ export function buildInitiate({
   api: Api<any, EndpointDefinitions, any, any>
   context: ApiContext<EndpointDefinitions>
 }) {
+  // keep track of running queries by id
   const runningQueries: Record<
     string,
-    QueryActionCreatorResult<any> | undefined
+    Record<string, QueryActionCreatorResult<any> | undefined>
   > = {}
+  // keep track of running mutations by id
   const runningMutations: Record<
     string,
     MutationActionCreatorResult<any> | undefined
@@ -223,7 +225,10 @@ export function buildInitiate({
         endpointDefinition,
         endpointName,
       })
-      return runningQueries[queryCacheKey]
+      // TODO(manuel) this is not really what we want, because we don't know which of those thunks will actually resolve to the correct result
+      return Promise.all(
+        Object.values(runningQueries[queryCacheKey] || {})
+      ).then((x) => x[0])
     } else {
       return runningMutations[argOrRequestId]
     }
@@ -231,7 +236,9 @@ export function buildInitiate({
 
   function getRunningOperationPromises() {
     return [
-      ...Object.values(runningQueries),
+      ...Object.values(runningQueries)
+        .map((x) => Object.values(x))
+        .reduce((x, y) => x.concat(y)),
       ...Object.values(runningMutations),
     ].filter(<T>(t: T | undefined): t is T => !!t)
   }
@@ -301,14 +308,15 @@ Features like automatic cache collection, automatic refetching etc. will not be 
         })
 
         const statePromise: QueryActionCreatorResult<any> = Object.assign(
-          Promise.all([runningQueries[queryCacheKey], thunkResult]).then(
-            (x) => {
-              console.log('finished promises', allIds, x)
-              return (
-                api.endpoints[endpointName] as ApiEndpointQuery<any, any>
-              ).select(arg)(getState())
-            }
-          ),
+          Promise.all([
+            Object.values(runningQueries?.[queryCacheKey] || {}),
+            thunkResult,
+          ]).then((x) => {
+            console.log('finished promises', allIds, x)
+            return (
+              api.endpoints[endpointName] as ApiEndpointQuery<any, any>
+            ).select(arg)(getState())
+          }),
           {
             arg,
             requestId,
@@ -352,12 +360,13 @@ Features like automatic cache collection, automatic refetching etc. will not be 
           }
         )
 
-        if (!runningQueries[queryCacheKey]) {
-          runningQueries[queryCacheKey] = statePromise
-          statePromise.then(() => {
-            delete runningQueries[queryCacheKey]
-          })
+        runningQueries[queryCacheKey] = {
+          ...(runningQueries[queryCacheKey] || {}),
+          requestId: statePromise,
         }
+        statePromise.then(() => {
+          delete runningQueries?.[queryCacheKey]?.[requestId]
+        })
 
         return statePromise
       }
