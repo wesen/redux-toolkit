@@ -194,7 +194,7 @@ export function buildInitiate({
   // keep track of running queries by id
   const runningQueries: Record<
     string,
-    Record<string, QueryActionCreatorResult<any> | undefined>
+    Record<string, QueryActionCreatorResult<any>>
   > = {}
   // keep track of running mutations by id
   const runningMutations: Record<
@@ -286,38 +286,43 @@ Features like automatic cache collection, automatic refetching etc. will not be 
 
         const { requestId, abort } = thunkResult
 
-        const prevThunk = runningQueries[queryCacheKey]
-        const allIds = [thunkResult.requestId, prevThunk?.requestId]
-
-        console.log(
-          'thunkResult',
+        console.log('runningQueries', runningQueries)
+        const prevThunks = Object.values(runningQueries?.[queryCacheKey] || {})
+        const allIds = [
           thunkResult.requestId,
-          'prevThunk',
-          prevThunk?.requestId,
-          'prevStatus',
-          prevThunk
-        )
+          ...prevThunks.map((x) => x?.requestId),
+        ]
 
-        thunkResult.then((x) => {
-          console.log(
-            'thunkResult finished',
-            thunkResult.requestId,
-            'resolved',
-            x
-          )
+        console.log('thunkResult', thunkResult.requestId, 'allIds', allIds)
+        console.log('prev thunks', prevThunks)
+
+        const thunkResult2 = thunkResult.then((x) => {
+          console.log('finished thunk', thunkResult.requestId, 'val', x)
+          return x
         })
 
+        let promises: Promise<any>[] = [...prevThunks, thunkResult2]
+        console.log('promises', promises)
         const statePromise: QueryActionCreatorResult<any> = Object.assign(
-          Promise.all([
-            Object.values(runningQueries?.[queryCacheKey] || {}),
-            thunkResult,
-          ]).then((x) => {
-            console.log('finished promises', allIds, x)
-            return (
+          Promise.all(promises).then((x) => {
+            console.log(
+              'finished promises for',
+              requestId,
+              promises,
+              'allIds',
+              allIds,
+              'result',
+              x
+            )
+            const res = (
               api.endpoints[endpointName] as ApiEndpointQuery<any, any>
             ).select(arg)(getState())
+            console.log('data for', requestId, res)
+            console.log('getState', getState())
+            return res
           }),
           {
+            waitingOn: allIds,
             arg,
             requestId,
             subscriptionOptions,
@@ -360,10 +365,11 @@ Features like automatic cache collection, automatic refetching etc. will not be 
           }
         )
 
-        runningQueries[queryCacheKey] = {
-          ...(runningQueries[queryCacheKey] || {}),
-          requestId: statePromise,
+        if (!runningQueries.hasOwnProperty(queryCacheKey)) {
+          runningQueries[queryCacheKey] = {}
         }
+
+        runningQueries[queryCacheKey][requestId] = statePromise
         statePromise.then(() => {
           delete runningQueries?.[queryCacheKey]?.[requestId]
         })

@@ -200,8 +200,10 @@ export function buildSlice({
               }
             )
             console.log(
-              'addCase deleted',
+              'addCase rejected',
+              requestId,
               arg.queryCacheKey,
+              'existing query',
               draft[arg.queryCacheKey]?.requestId
             )
           }
